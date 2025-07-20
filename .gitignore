@@ -1,0 +1,30 @@
+# Terraform state files
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+
+# Sensitive variable files
+*.tfvars
+
+# Terraform plan output
+*.plan
+
+# Local terraform directories
+.terraform/
+.terraform.lock.hcl
+
+# Node modules (if using Node.js)
+node_modules/
+
+# Build output (for frontend/backend)
+dist/
+build/
+
+# OS / IDE / Editor junk
+.DS_Store
+*.swp
+.idea/
+.vscode/
+.terraform/
