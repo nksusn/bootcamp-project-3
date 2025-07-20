@@ -5,7 +5,7 @@ variable "aws_region" {
 
 variable "cluster_name" {
   type    = string
-  default = "eks-nebulance"
+  default = "eks-nebulance-us-east-2"
 }
 
 variable "vpc_cidr" {
