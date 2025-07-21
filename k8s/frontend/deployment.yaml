@@ -5,21 +5,53 @@ metadata:
   namespace: default
   labels:
     app: frontend
+    app.kubernetes.io/name: frontend
+    app.kubernetes.io/instance: frontend
 spec:
   replicas: 2
   selector:
     matchLabels:
       app: frontend
+      app.kubernetes.io/name: frontend
+      app.kubernetes.io/instance: frontend
   template:
     metadata:
       labels:
         app: frontend
+        app.kubernetes.io/name: frontend
+        app.kubernetes.io/instance: frontend
     spec:
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: frontend-config
       containers:
         - name: frontend
           image: nksusn/eks-app-frontend:v1.0.0
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: nginx.conf
+          env:
+            - name: REACT_APP_API_URL
+              value: "http://backend:3000"
+            - name: NODE_ENV
+              value: "production"
           envFrom:
             - secretRef:
-                name: app-secrets # Only if frontend uses things like API_KEY
+                name: app-secrets # For API_KEY and other secrets
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 20

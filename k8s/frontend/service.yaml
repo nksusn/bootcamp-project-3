@@ -4,10 +4,14 @@ metadata:
   name: frontend
   labels:
     app: frontend
+    app.kubernetes.io/name: frontend
+    app.kubernetes.io/instance: frontend
 spec:
   type: LoadBalancer
   selector:
     app: frontend
+    app.kubernetes.io/name: frontend
+    app.kubernetes.io/instance: frontend
   ports:
     - protocol: TCP
       port: 80

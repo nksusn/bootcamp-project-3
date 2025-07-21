@@ -1,25 +1,32 @@
-# templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "frontend.fullname" . }}
   labels:
-    app: frontend
+    {{- include "frontend.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: frontend
+      {{- include "frontend.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: frontend
+        {{- include "frontend.selectorLabels" . | nindent 8 }}
     spec:
       containers:
-        - name: frontend
+        - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+            allowPrivilegeEscalation: true
+
           ports:
             - containerPort: 80
+              name: http 
+              protocol: TCP
           envFrom:
             - secretRef:
                 name: {{ .Values.externalSecrets.name }}
@@ -35,4 +42,3 @@ spec:
               port: 80
             initialDelaySeconds: 15
             periodSeconds: 20
-      imagePullSecrets: []
